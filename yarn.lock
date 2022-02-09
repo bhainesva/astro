@@ -160,6 +160,11 @@
   resolved "https://registry.yarnpkg.com/@astropub/webapi/-/webapi-0.10.11.tgz#7cf3926bb24f474b344025fa437d08fa71d0a6b9"
   integrity sha512-i1Aw6Px3n+x0GGbZxoQc6bY2gxks//rPUwuX4ICuNai8GvK/6j/0OGMVkD3ZlVJ/zfUtds8BDx/k+TJYaAPlKQ==
 
+"@astropub/webapi@^0.10.13":
+  version "0.10.13"
+  resolved "https://registry.yarnpkg.com/@astropub/webapi/-/webapi-0.10.13.tgz#28f95706d1e9041495347465fb347eb78035cdd7"
+  integrity sha512-efUVnq9IWPHYl5nxSLkDZzp1RvNmKpYApcHhgQnN2A+4D8z6dnTYlXo5Ogl0aAJWMMBKN89Q2GJwDF0zy8Lonw==
+
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4", "@babel/code-frame@^7.16.7":
   version "7.16.7"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.16.7.tgz#44416b6bd7624b998f5b1af5d470856c40138789"

@@ -9,7 +9,7 @@ import { render } from '../render/core.js';
 import { RouteCache } from '../render/route-cache.js';
 import { createLinkStylesheetElementSet, createModuleScriptElementWithSrcSet } from '../render/ssr-element.js';
 import { createRenderer } from '../render/renderer.js';
-import { appendForwardSlash } from '../path.js';
+import { prependForwardSlash } from '../path.js';
 
 export abstract class BaseApp {
 	#manifest: Manifest;
@@ -69,7 +69,7 @@ export abstract class BaseApp {
 					throw new Error(`Unable to resolve [${specifier}]`);
 				}
 				const bundlePath = manifest.entryModules[specifier];
-				return new URL(bundlePath, appendForwardSlash(url.toString())).pathname;
+				return prependForwardSlash(bundlePath);
 			},
 			route: routeData,
 			routeCache: this.#routeCache,
