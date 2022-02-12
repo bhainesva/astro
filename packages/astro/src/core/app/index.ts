@@ -1,4 +1,4 @@
-import type { ComponentInstance, ManifestData, RouteData, Renderer } from '../../@types/astro';
+import type { ComponentInstance, ManifestData, RouteData, GetStaticPathsResultKeyed, GetStaticPathsResult, GetStaticPathsItem, Renderer } from '../../@types/astro';
 import type {
 	SSRManifest as Manifest, RouteInfo
 } from './types';
@@ -36,6 +36,58 @@ export abstract class BaseApp {
 		return matchRoute(pathname, this.#manifestData);
 	}
 	abstract render(req: any, routeData?: RouteData): Promise<string>;
+	protected async renderData(url: URL, data: any, routeData?: RouteData): Promise<string> {
+		if(!routeData) {
+			routeData = this.matchURL(url);
+			if(!routeData) {
+				return 'Not found';
+			}
+		}
+
+		const manifest = this.#manifest;
+		const info = this.#routeDataToRouteInfo.get(routeData!)!;
+		const smallCache = new RouteCache(defaultLogOptions);
+		const staticPaths: GetStaticPathsResult = [
+			data
+		];
+		const keyedStaticPaths = staticPaths as GetStaticPathsResultKeyed;
+		keyedStaticPaths.keyed = new Map<string, GetStaticPathsItem>();
+		for (const sp of keyedStaticPaths) {
+			const paramsKey = JSON.stringify(sp.params);
+			keyedStaticPaths.keyed.set(paramsKey, sp);
+		}
+
+		const [mod, renderers] = await Promise.all([
+			this.#loadModule(info.file),
+			this.#renderersPromise
+		]);
+
+		const links = createLinkStylesheetElementSet(info.links, manifest.site);
+		const scripts = createModuleScriptElementWithSrcSet(info.scripts, manifest.site);
+
+		return render({
+			experimentalStaticBuild: true,
+			links,
+			logging: defaultLogOptions,
+			markdownRender: manifest.markdown.render,
+			mod,
+			origin: url.origin,
+			pathname: url.pathname,
+			scripts,
+			renderers,
+			async resolve(specifier: string) {
+				if(!(specifier in manifest.entryModules)) {
+					throw new Error(`Unable to resolve [${specifier}]`);
+				}
+				const bundlePath = manifest.entryModules[specifier];
+				return prependForwardSlash(bundlePath);
+			},
+			route: routeData,
+			routeCache: smallCache,
+			site: this.#manifest.site
+		})
+	}
+
 	protected async renderURL(url: URL, routeData?: RouteData): Promise<string> {
 		if(!routeData) {
 			routeData = this.matchURL(url);
