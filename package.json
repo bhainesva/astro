@@ -16,7 +16,8 @@
     "test:templates": "turbo run test --scope=create-astro",
     "benchmark": "turbo run benchmark --scope=astro",
     "lint": "eslint \"packages/**/*.ts\"",
-    "format": "prettier -w ."
+    "format": "prettier -w .",
+    "postinstall": "cd packages/astro && yarn install"
   },
   "workspaces": [
     "compiled/*",
